@@ -54,6 +54,8 @@ export async function GET() {
   } catch (error) {
     console.error('Health check error:', error);
     health.status = 'unhealthy';
+    health.error = error instanceof Error ? error.message : 'Unknown error';
+    // Always return JSON, even on error
     return NextResponse.json(health, { status: 503 });
   }
 }

@@ -62,8 +62,9 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Error uploading document:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to upload document' },
+      { error: 'Failed to upload document', details: message },
       { status: 500 }
     );
   }
@@ -83,8 +84,9 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Error fetching documents:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to fetch documents' },
+      { error: 'Failed to fetch documents', details: message },
       { status: 500 }
     );
   }
@@ -117,8 +119,9 @@ export async function DELETE(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error deleting document:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to delete document' },
+      { error: 'Failed to delete document', details: message },
       { status: 500 }
     );
   }

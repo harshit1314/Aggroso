@@ -1,13 +1,23 @@
 import sqlite3 from 'sqlite3';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 
-const dbPath = process.env.DATABASE_URL || path.join(process.cwd(), 'data', 'knowledge.db');
+// Use temp directory on Vercel, local data dir otherwise
+const dbPath = process.env.DATABASE_URL || 
+  (process.env.VERCEL 
+    ? path.join(os.tmpdir(), 'knowledge.db')
+    : path.join(process.cwd(), 'data', 'knowledge.db'));
 
-// Ensure data directory exists
+// Ensure data directory exists (may fail on Vercel, that's okay)
 const dataDir = path.dirname(dbPath);
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+try {
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+} catch (err) {
+  console.warn(`Could not create data directory at ${dataDir}:`, err);
+  // Continue anyway - SQLite will try to create the file
 }
 
 let db: sqlite3.Database | null = null;
