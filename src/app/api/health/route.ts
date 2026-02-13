@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getDocumentCount, getTotalWordCount } from '@/lib/documents';
 import { checkOpenAIConnection } from '@/lib/ai';
-import { getDatabase } from '@/lib/database';
+import { ensureInitialized } from '@/lib/database';
 
 export async function GET() {
   const health: any = {
@@ -19,9 +19,11 @@ export async function GET() {
   };
 
   try {
+    // Ensure database is initialized
+    await ensureInitialized();
+
     // Check database
     try {
-      getDatabase();
       const docCount = await getDocumentCount();
       const wordCount = await getTotalWordCount();
 

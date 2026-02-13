@@ -1,8 +1,5 @@
-import { getDatabase, runAsync, getAsync, allAsync } from './database';
+import { getDatabase, runAsync, getAsync, allAsync, ensureInitialized } from './database';
 import { v4 as uuidv4 } from 'uuid';
-
-// Initialize database on module load
-getDatabase();
 
 export interface Document {
   id: string;

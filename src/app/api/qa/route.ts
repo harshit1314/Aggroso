@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllChunks } from '@/lib/documents';
 import { findRelevantChunks, generateAnswer } from '@/lib/ai';
+import { ensureInitialized } from '@/lib/database';
 
 export async function POST(request: NextRequest) {
   try {
+    // Ensure database is initialized
+    await ensureInitialized();
+
     const body = await request.json();
     const { question } = body;
 

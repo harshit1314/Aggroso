@@ -63,9 +63,9 @@ export function getDatabase(): sqlite3.Database {
   if (!db) {
     db = new sqlite3.Database(dbPath, (err) => {
       if (err) {
-        console.error('Database error:', err);
+        console.error('Database connection error:', err);
       } else {
-        console.log('Database connected successfully');
+        console.log('Database connected successfully at:', dbPath);
         initializeDatabase();
       }
     });
@@ -76,6 +76,32 @@ export function getDatabase(): sqlite3.Database {
 
 let initialized = false;
 let initPromise: Promise<void> | null = null;
+
+// Ensure database is initialized and ready
+export async function ensureInitialized(): Promise<void> {
+  if (initialized) return;
+  if (initPromise) return initPromise;
+  
+  getDatabase(); // Start initialization
+  
+  // Wait for initialization or timeout after 5 seconds
+  return new Promise((resolve) => {
+    const checkInterval = setInterval(() => {
+      if (initialized) {
+        clearInterval(checkInterval);
+        resolve();
+      }
+    }, 100);
+    
+    setTimeout(() => {
+      clearInterval(checkInterval);
+      if (!initialized) {
+        console.warn('Database initialization timeout');
+      }
+      resolve();
+    }, 5000);
+  });
+}
 
 async function initializeDatabase() {
   if (initialized || initPromise) return initPromise;

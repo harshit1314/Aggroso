@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { uploadDocument, getAllDocuments, deleteDocument } from '@/lib/documents';
+import { ensureInitialized } from '@/lib/database';
 
 export async function POST(request: NextRequest) {
   try {
+    // Ensure database is initialized
+    await ensureInitialized();
+
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const customName = (formData.get('name') as string) || '';
