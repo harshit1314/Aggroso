@@ -177,18 +177,30 @@ export default function StatusPage() {
 
             {/* Troubleshooting */}
             <div className="p-6 bg-amber-50 border border-amber-200 rounded-lg">
-              <h3 className="font-semibold text-amber-900 mb-3">Troubleshooting Tips</h3>
-              <ul className="text-sm text-amber-800 space-y-2">
-                <li>
-                  <strong>🤖 LLM Down?</strong> Check your HuggingFace API key in .env.local or verify API rate limits
-                </li>
-                <li>
-                  <strong>💾 Database Down?</strong> Ensure write permissions to ./data directory
-                </li>
-                <li>
-                  <strong>🖥️ App Down?</strong> Restart the development server: npm run dev
-                </li>
-              </ul>
+              <h3 className="font-semibold text-amber-900 mb-3">⚠️ Troubleshooting Guide</h3>
+              <div className="text-sm text-amber-800 space-y-3">
+                <div>
+                  <strong>🤖 LLM Service Failed?</strong>
+                  <p className="mt-1 ml-4">
+                    For Vercel deployment: Go to Vercel Dashboard → Settings → Environment Variables → Add <code className="bg-amber-100 px-2 py-1 rounded">OPENAI_API_KEY</code> with your HuggingFace token, then redeploy.
+                  </p>
+                  <p className="mt-1 ml-4">
+                    For local: Ensure <code className="bg-amber-100 px-2 py-1 rounded">.env.local</code> has valid HuggingFace API key
+                  </p>
+                </div>
+                <div>
+                  <strong>💾 Database Won't Connect?</strong>
+                  <p className="mt-1 ml-4">
+                    SQLite on Vercel uses ephemeral storage. Data resets on each deployment. For Vercel, data is temporary - use for demo only.
+                  </p>
+                </div>
+                <div>
+                  <strong>🖥️ App Running but Services Failed?</strong>
+                  <p className="mt-1 ml-4">
+                    Check Vercel Deployments tab for build/runtime logs. Most issues come from missing environment variables.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         ) : null}
@@ -197,7 +209,7 @@ export default function StatusPage() {
       {/* Footer */}
       <footer className="bg-white border-t border-gray-200 mt-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-600 text-sm">
-          <p>Health Dashboard • All data refreshes automatically every 5 seconds</p>
+          <p>Health Dashboard • Real-time service monitoring • Last updated: {health?.timestamp}</p>
         </div>
       </footer>
     </div>

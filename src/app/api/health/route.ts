@@ -39,9 +39,16 @@ export async function GET() {
     // Check OpenAI/LLM connection
     try {
       const isConnected = await checkOpenAIConnection();
-      health.services.llm = isConnected ? 'connected' : 'failed';
       if (!isConnected) {
+        // Check if API key is missing
+        if (!process.env.OPENAI_API_KEY) {
+          health.services.llm = 'failed - missing OPENAI_API_KEY';
+        } else {
+          health.services.llm = 'failed - invalid credentials';
+        }
         health.status = 'degraded';
+      } else {
+        health.services.llm = 'connected';
       }
     } catch (error) {
       health.services.llm = 'failed';
