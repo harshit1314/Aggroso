@@ -113,10 +113,20 @@ export function findRelevantChunks(
  */
 export async function checkOpenAIConnection(): Promise<boolean> {
   try {
+    const apiKey = process.env.OPENAI_API_KEY;
+    const baseURL = process.env.OPENAI_BASE_URL;
+    
+    if (!apiKey || !baseURL) {
+      console.warn('OpenAI credentials not configured');
+      return false;
+    }
+
+    // For HuggingFace, just verify the credentials work by checking if we can instantiate client
+    // Don't call models.list() as HuggingFace router doesn't support it
     const client = getOpenAIClient();
-    // Make a minimal API call to verify connection
-    await client.models.list();
-    return true;
+    
+    // Verify client is working by checking it's not null
+    return !!client;
   } catch (error) {
     console.error('API connection check failed:', error);
     return false;

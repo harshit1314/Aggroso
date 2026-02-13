@@ -39,8 +39,15 @@ export default function QAInterface() {
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Failed to get answer');
+        let errorMessage = 'Failed to get answer';
+        try {
+          const data = await res.json();
+          errorMessage = data.error || `Server error: ${res.status}`;
+        } catch {
+          // If response is not JSON, use status text
+          errorMessage = `Server error: ${res.status} ${res.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await res.json();

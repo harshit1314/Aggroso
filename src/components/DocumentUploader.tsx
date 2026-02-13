@@ -53,8 +53,15 @@ export default function DocumentUploader({ onSuccess }: UploadProps) {
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || 'Failed to upload document');
+        let errorMessage = 'Failed to upload document';
+        try {
+          const data = await response.json();
+          errorMessage = data.error || `Server error: ${response.status}`;
+        } catch {
+          // If response is not JSON, use status text
+          errorMessage = `Server error: ${response.status} ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
